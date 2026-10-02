@@ -1,0 +1,78 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Case Web Lookup</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #0066cc; text-align: center; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 25px; }
+        input[type="text"] { flex: 1; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 12px 24px; font-size: 16px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0052a3; }
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .detail-item { padding: 12px; background-color: #f9f9f9; border-left: 4px solid #0066cc; border-radius: 4px; }
+        .label { font-size: 12px; color: #666; text-transform: uppercase; font-weight: bold; }
+        .value { font-size: 16px; font-weight: 600; margin-top: 4px; color: #222; }
+        .not-found { color: #d9534f; text-align: center; font-weight: bold; padding: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Salesforce Case Dashboard</h2>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search Case Number (e.g. SF-11049871)...">
+        <button onclick="searchCase()">Search</button>
+    </div>
+
+    <div id="resultContainer"></div>
+</div>
+
+<script>
+// Load records exported from rawdata sheet
+const caseData = [
+  /* Inject JSON array converted from rawdata sheet here */
+];
+
+function searchCase() {
+    const query = document.getElementById('searchInput').value.trim().toUpperCase();
+    const container = document.getElementById('resultContainer');
+    
+    if (!query) {
+        container.innerHTML = '<div class="not-found">Please enter a Case Number or Account Number.</div>';
+        return;
+    }
+
+    const match = caseData.find(item => 
+        (item['Case Number'] && item['Case Number'].toUpperCase() === query) || 
+        (item['Service Account Number'] && String(item['Service Account Number']).toUpperCase() === query)
+    );
+
+    if (!match) {
+        container.innerHTML = '<div class="not-found">No matching record found.</div>';
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="details-grid">
+            <div class="detail-item"><div class="label">Case Number</div><div class="value">${match['Case Number'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">Account Number</div><div class="value">${match['Service Account Number'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">MSP Name</div><div class="value">${match['MSP Name'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">Case Status</div><div class="value">${match['Case Status'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">WO Status</div><div class="value">${match['WO Status'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">SA Number</div><div class="value">${match['Service Appointment Number'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">SA Status</div><div class="value">${match['SA Status'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">IBAS Status</div><div class="value">${match['IBAS Status'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">Case Owner / Resolving Unit</div><div class="value">${match['Resolving Unit V2'] || 'N/A'}</div></div>
+            <div class="detail-item"><div class="label">Last Modified By</div><div class="value">${match['Last Modified By'] || 'N/A'}</div></div>
+        </div>
+    `;
+}
+</script>
+
+</body>
+</html>
