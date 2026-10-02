@@ -1,0 +1,163 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SF DASHBOARD</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #e6e6e6; 
+            margin: 0;
+            padding: 30px; 
+            display: flex;
+            justify-content: center;
+        }
+        .container { 
+            width: 100%;
+            max-width: 850px; 
+            background: #e6e6e6; 
+            padding: 20px 40px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+        }
+        h1 { 
+            color: #5bb043; 
+            text-align: center; 
+            font-size: 38px;
+            font-weight: normal;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        .search-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        .search-label {
+            color: #0070c0;
+            font-size: 22px;
+            font-weight: normal;
+        }
+        .search-input-group {
+            display: flex;
+            gap: 8px;
+        }
+        input[type="text"] { 
+            padding: 8px 12px; 
+            font-size: 18px; 
+            border: 1px solid #777; 
+            border-radius: 2px;
+            width: 220px;
+            text-align: right;
+        }
+        button { 
+            padding: 8px 16px; 
+            font-size: 16px; 
+            background-color: #0070c0; 
+            color: white; 
+            border: none; 
+            border-radius: 2px; 
+            cursor: pointer; 
+        }
+        button:hover { 
+            background-color: #005a9e; 
+        }
+        .details-list { 
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .detail-row { 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .label { 
+            color: #0070c0;
+            font-size: 22px;
+            font-weight: normal;
+        }
+        .value { 
+            font-size: 19px; 
+            color: #000; 
+            font-weight: normal;
+            text-align: right;
+        }
+        .not-found { 
+            color: #d9534f; 
+            text-align: center; 
+            font-weight: bold; 
+            padding: 20px; 
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>SF DASHBOARD</h1>
+    
+    <div class="search-section">
+        <span class="search-label">Search Case Number:</span>
+        <div class="search-input-group">
+            <input type="text" id="searchInput" placeholder="e.g. SF-10637283" onkeypress="handleKeyPress(event)">
+            <button onclick="searchCase()">Search</button>
+        </div>
+    </div>
+
+    <div id="resultContainer"></div>
+</div>
+
+<script>
+// Load records exported from rawdata sheet
+const caseData = [
+  /* Inject JSON array converted from rawdata sheet here */
+];
+
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        searchCase();
+    }
+}
+
+function searchCase() {
+    const query = document.getElementById('searchInput').value.trim().toUpperCase();
+    const container = document.getElementById('resultContainer');
+    
+    if (!query) {
+        container.innerHTML = '<div class="not-found">Please enter a Case Number or Account Number.</div>';
+        return;
+    }
+
+    const match = caseData.find(item => 
+        (item['Case Number'] && item['Case Number'].toUpperCase() === query) || 
+        (item['Service Account Number'] && String(item['Service Account Number']).toUpperCase() === query)
+    );
+
+    if (!match) {
+        container.innerHTML = '<div class="not-found">No matching record found.</div>';
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="details-list">
+            <div class="detail-row"><span class="label">Account Number:</span><span class="value">${match['Service Account Number'] || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">MSP Name:</span><span class="value">${match['MSP Name'] || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Case Status:</span><span class="value">${match['Case Status'] || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">WO Status:</span><span class="value">${match['WO Status'] ?? '0'}</span></div>
+            <div class="detail-row"><span class="label">SA Number:</span><span class="value">${match['Service Appointment Number'] ?? '0'}</span></div>
+            <div class="detail-row"><span class="label">SA Status:</span><span class="value">${match['SA Status'] ?? '0'}</span></div>
+            <div class="detail-row"><span class="label">IBAS Status:</span><span class="value">${match['IBAS Status'] || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Case Owner / Resolving Unit:</span><span class="value">${match['Resolving Unit V2'] || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Last Modified By:</span><span class="value">${match['Last Modified By'] || 'N/A'}</span></div>
+        </div>
+    `;
+}
+</script>
+
+</body>
+</html>
