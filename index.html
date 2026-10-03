@@ -160,26 +160,22 @@
 <script>
 let caseData = [];
 
-// Function para basahin ang ini-upload na CSV file
-function loadCSVFile(event) {
-    const file = event.target.files[0];
-    const statusLabel = document.getElementById('fileStatus');
-    
-    if (!file) return;
+    // Kusang iha-fetch ang 'rawdata.csv' mula sa kaparehong folder
+Papa.parse("rawdata.csv", {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+        caseData = results.data;
+        console.log("Data loaded automatically:", caseData.length, "rows");
+    },
+    error: function(err) {
+        console.error("Error loading CSV file:", err);
+    }
+});
 
-    Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-            caseData = results.data;
-            statusLabel.textContent = `✓ Loaded ${caseData.length} records`;
-            document.getElementById('resultContainer').innerHTML = ''; // Clear status
-        },
-        error: function(err) {
-            alert('Error reading CSV file: ' + err.message);
-        }
-    });
-}
+// ... (retain existing handleKeyPress and searchCase functions)
+</script>
 
 function handleKeyPress(event) {
     if (event.key === 'Enter') {
