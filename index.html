@@ -130,84 +130,93 @@
 </div>
 
 <script>
-// Load records exported from rawdata sheet
-const caseData = [{
-SF-08366140: "SF-08830153",
-: "",
-__1: "",
-MS CONVERGENCE CORPORATION: "GALLOPVISION SERVICES INC",
-DIOSDADO DULAY: "PAULO NOLASCO - UAS",
-1898902147685: 1898902166311,
-In Progress: "In Progress",
-ACT: "ADS",
-BSS QUEUE: "MSP BC"
-},
-{
-SF-08366140: "SF-08995150",
-: "",
-__1: "",
-MS CONVERGENCE CORPORATION: "A6 TELECOMMUNICATION SERVICES",
-DIOSDADO DULAY: "JONEL MANZANO - UAS",
-1898902147685: 1898902121317,
-In Progress: "In Progress",
-ACT: "ACT",
-BSS QUEUE: "DISPATCH & PORT MANAGEMENT"
-},
-{
-SF-08366140: "SF-09270573",
-: "",
-__1: "",
-MS CONVERGENCE CORPORATION: "JLO AND DAUGHSONS",
-DIOSDADO DULAY: "MARGARETT ANNE G. TANGLAO - UAS",
-1898902147685: 1898902132344,
-In Progress: "In Progress",
-ACT: "CNL",
-BSS QUEUE: "DISPATCH & PORT MANAGEMENT"
-},
-{
-SF-08366140: "SF-09282435",
-: "",
-__1: "",
-MS CONVERGENCE CORPORATION: "J FIBER INTERNET SERVICES CORPORATION",
-DIOSDADO DULAY: "JAYSON TAPNIO - UAS",
-1898902147685: 1898902087173,
-In Progress: "In Progress",
-ACT: "ACT",
-BSS QUEUE: "MSP BC"
-},
-{
-SF-08366140: "SF-09482960",
-: "",
-__1: "",
-MS CONVERGENCE CORPORATION: "FIBERCORE SOLUTIONS PANAY INC",
-DIOSDADO DULAY: "PAULO NOLASCO - UAS",
-1898902147685: 1680001418023,
-In Progress: "In Progress",
-ACT: "ACT",
-BSS QUEUE: "MSP BC"
-},
-{
-SF-08366140: "SF-09727417",
-: "",
-__1: "",
-MS CONVERGENCE CORPORATION: "FIBERCORE SOLUTIONS PANAY INC",
-DIOSDADO DULAY: "ZANDRO MENDOZA - UAS",
-1898902147685: 1898902182407,
-In Progress: "In Progress",
-ACT: "ACT",
-BSS QUEUE: "DISPATCH & PORT MANAGEMENT"
-},
-{
-SF-08366140: "SF-09981781",
-: "",
-__1: "",
-MS CONVERGENCE CORPORATION: "COVENANT TEL",
-DIOSDADO DULAY: "MARCELINO CACAP - UAS",
-1898902147685: 1898902169394,
-In Progress: "In Progress",
-ACT: "ACT",
-BSS QUEUE: "BSS QUEUE"
-},
+<script>
+// Correctly structured case data
+const caseData = [
+    {
+        caseNumber: "SF-08830153",
+        accountNumber: "1898902166311",
+        mspName: "GALLOPVISION SERVICES INC",
+        caseStatus: "In Progress",
+        woStatus: "0",
+        saNumber: "0",
+        saStatus: "0",
+        ibasStatus: "ACT",
+        resolvingUnit: "PAULO NOLASCO - UAS",
+        lastModifiedBy: "MSP BC"
+    },
+    {
+        caseNumber: "SF-08995150",
+        accountNumber: "1898902121317",
+        mspName: "A6 TELECOMMUNICATION SERVICES",
+        caseStatus: "In Progress",
+        woStatus: "0",
+        saNumber: "0",
+        saStatus: "0",
+        ibasStatus: "ACT",
+        resolvingUnit: "JONEL MANZANO - UAS",
+        lastModifiedBy: "DISPATCH & PORT MANAGEMENT"
+    },
+    {
+        caseNumber: "SF-09270573",
+        accountNumber: "1898902132344",
+        mspName: "JLO AND DAUGHSONS",
+        caseStatus: "In Progress",
+        woStatus: "0",
+        saNumber: "0",
+        saStatus: "0",
+        ibasStatus: "CNL",
+        resolvingUnit: "MARGARETT ANNE G. TANGLAO - UAS",
+        lastModifiedBy: "DISPATCH & PORT MANAGEMENT"
+    },
+    {
+        caseNumber: "SF-09282435",
+        accountNumber: "1898902087173",
+        mspName: "J FIBER INTERNET SERVICES CORPORATION",
+        caseStatus: "In Progress",
+        woStatus: "0",
+        saNumber: "0",
+        saStatus: "0",
+        ibasStatus: "ACT",
+        resolvingUnit: "JAYSON TAPNIO - UAS",
+        lastModifiedBy: "MSP BC"
+    },
+    {
+        caseNumber: "SF-09482960",
+        accountNumber: "1680001418023",
+        mspName: "FIBERCORE SOLUTIONS PANAY INC",
+        caseStatus: "In Progress",
+        woStatus: "0",
+        saNumber: "0",
+        saStatus: "0",
+        ibasStatus: "ACT",
+        resolvingUnit: "PAULO NOLASCO - UAS",
+        lastModifiedBy: "MSP BC"
+    },
+    {
+        caseNumber: "SF-09727417",
+        accountNumber: "1898902182407",
+        mspName: "FIBERCORE SOLUTIONS PANAY INC",
+        caseStatus: "In Progress",
+        woStatus: "0",
+        saNumber: "0",
+        saStatus: "0",
+        ibasStatus: "ACT",
+        resolvingUnit: "ZANDRO MENDOZA - UAS",
+        lastModifiedBy: "DISPATCH & PORT MANAGEMENT"
+    },
+    {
+        caseNumber: "SF-09981781",
+        accountNumber: "1898902169394",
+        mspName: "COVENANT TEL",
+        caseStatus: "In Progress",
+        woStatus: "0",
+        saNumber: "0",
+        saStatus: "0",
+        ibasStatus: "ACT",
+        resolvingUnit: "MARCELINO CACAP - UAS",
+        lastModifiedBy: "BSS QUEUE"
+    }
 ];
 
 function handleKeyPress(event) {
@@ -226,8 +235,8 @@ function searchCase() {
     }
 
     const match = caseData.find(item => 
-        (item['Case Number'] && item['Case Number'].toUpperCase() === query) || 
-        (item['Service Account Number'] && String(item['Service Account Number']).toUpperCase() === query)
+        (item.caseNumber && item.caseNumber.toUpperCase() === query) || 
+        (item.accountNumber && String(item.accountNumber).toUpperCase() === query)
     );
 
     if (!match) {
@@ -237,19 +246,16 @@ function searchCase() {
 
     container.innerHTML = `
         <div class="details-list">
-            <div class="detail-row"><span class="label">Account Number:</span><span class="value">${match['Service Account Number'] || 'N/A'}</span></div>
-            <div class="detail-row"><span class="label">MSP Name:</span><span class="value">${match['MSP Name'] || 'N/A'}</span></div>
-            <div class="detail-row"><span class="label">Case Status:</span><span class="value">${match['Case Status'] || 'N/A'}</span></div>
-            <div class="detail-row"><span class="label">WO Status:</span><span class="value">${match['WO Status'] ?? '0'}</span></div>
-            <div class="detail-row"><span class="label">SA Number:</span><span class="value">${match['Service Appointment Number'] ?? '0'}</span></div>
-            <div class="detail-row"><span class="label">SA Status:</span><span class="value">${match['SA Status'] ?? '0'}</span></div>
-            <div class="detail-row"><span class="label">IBAS Status:</span><span class="value">${match['IBAS Status'] || 'N/A'}</span></div>
-            <div class="detail-row"><span class="label">Case Owner / Resolving Unit:</span><span class="value">${match['Resolving Unit V2'] || 'N/A'}</span></div>
-            <div class="detail-row"><span class="label">Last Modified By:</span><span class="value">${match['Last Modified By'] || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Account Number:</span><span class="value">${match.accountNumber || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">MSP Name:</span><span class="value">${match.mspName || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Case Status:</span><span class="value">${match.caseStatus || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">WO Status:</span><span class="value">${match.woStatus ?? '0'}</span></div>
+            <div class="detail-row"><span class="label">SA Number:</span><span class="value">${match.saNumber ?? '0'}</span></div>
+            <div class="detail-row"><span class="label">SA Status:</span><span class="value">${match.saStatus ?? '0'}</span></div>
+            <div class="detail-row"><span class="label">IBAS Status:</span><span class="value">${match.ibasStatus || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Case Owner / Resolving Unit:</span><span class="value">${match.resolvingUnit || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Last Modified By:</span><span class="value">${match.lastModifiedBy || 'N/A'}</span></div>
         </div>
     `;
 }
 </script>
-
-</body>
-</html>
