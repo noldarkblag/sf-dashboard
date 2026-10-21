@@ -2,9 +2,12 @@ name: Auto Fetch Google Sheet to Rawdata JSON
 
 on:
   schedule:
-    # Araw-araw tuwing 12:00 AM UTC (8:00 AM Philippine Time)
     - cron: '0 0 * * *'
-  workflow_dispatch: # Pinapayagan kang i-trigger ito manual via button
+  workflow_dispatch:
+
+# Binibigyan ng permiso ang bot para makapag-commit/push ng rawdata.json
+permissions:
+  contents: write
 
 jobs:
   build-and-update:
@@ -12,10 +15,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
