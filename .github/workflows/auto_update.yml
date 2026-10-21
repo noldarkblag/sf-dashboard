@@ -1,0 +1,36 @@
+name: Auto Fetch Google Sheet to Rawdata JSON
+
+on:
+  schedule:
+    # Araw-araw tuwing 12:00 AM UTC (8:00 AM Philippine Time)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Pinapayagan kang i-trigger ito manual via button
+
+jobs:
+  build-and-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas requests
+
+      - name: Run generate_json.py
+        run: python generate_json.py
+
+      - name: Commit and Push Updated JSON
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add rawdata.json
+          git commit -m "Auto-update rawdata.json mula sa Google Sheet" || exit 0
+          git push
