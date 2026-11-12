@@ -2,7 +2,7 @@ import json
 import pandas as pd
 
 # Ilagay dito ang eksaktong filename o path ng Excel file mo
-EXCEL_FILE = "data.xlsx" 
+EXCEL_FILE = "forbidadashboard.xlsx" 
 
 # Kung maraming tabs/sheets ang Excel mo, ilagay ang pangalan ng sheet. 
 # Kung ang pinakaunang sheet lang ang babasahin, iwanang 0
