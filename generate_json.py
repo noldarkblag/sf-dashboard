@@ -1,39 +1,34 @@
 import json
-import urllib.request
 import pandas as pd
-import io
 
-SPREADSHEET_ID = "1Zx3xxASAdaQ8dEJTq4dOa419hDqu5Czq00AU06MUx4Y"
-GID = "1619855414"
+# Ilagay dito ang eksaktong filename o path ng Excel file mo
+EXCEL_FILE = "data.xlsx" 
 
-# Standard GViz CSV URL
-csv_url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid={GID}"
+# Kung maraming tabs/sheets ang Excel mo, ilagay ang pangalan ng sheet. 
+# Kung ang pinakaunang sheet lang ang babasahin, iwanang 0
+SHEET_NAME = 0  # Halimbawa: "Sheet1" o 0 para sa first tab
 
 try:
-    print("Kumokonekta sa Google Sheet...")
+    print(f"Binabasa ang Excel file: {EXCEL_FILE}...")
     
-    # Nagdaragdag ng User-Agent para hindi i-block ng Google ang GitHub Runner
-    req = urllib.request.Request(
-        csv_url, 
-        headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-    )
+    # Basahin ang Excel file
+    df = pd.read_excel(EXCEL_FILE, sheet_name=SHEET_NAME)
     
-    with urllib.request.urlopen(req) as response:
-        csv_data = response.read()
-
-    # Basahin ang CSV data
-    df = pd.read_csv(io.BytesIO(csv_data))
+    # Linisin ang mga blankong rows at cells
     df = df.dropna(how="all").fillna("")
 
+    # I-convert sa list of dictionaries para maging valid JSON
     json_data = df.to_dict(orient="records")
 
     # I-save bilang rawdata.json
     output_filename = "rawdata.json"
     with open(output_filename, "w", encoding="utf-8") as f:
-        json.dump(json_data, f, indent=4, ensure_ascii=False)
+        json.dump(json_data, f, indent=4, ensure_ascii=False, default=str)
 
-    print(f"\n[SUCCESS] Na-download at na-convert na ang {len(json_data)} rows!")
+    print(f"\n[SUCCESS] Na-convert na ang {len(json_data)} rows papuntang {output_filename}!")
 
+except FileNotFoundError:
+    print(f"\n[ERROR] Hindi mahanap ang file na '{EXCEL_FILE}'. Siguraduhing nasa parehong folder ito ng script.")
 except Exception as e:
     print(f"\n[ERROR] May naganap na mali: {e}")
-    raise e  # Sisiguraduhin nitong makikita sa logs ang eksaktong error kung mag-fail
+    raise e
